@@ -36,11 +36,11 @@ function App() {
                   <Sword className="w-4 h-4" />
                   Boosting
                 </a>
-                <a href="#accounts" className="flex items-center gap-2 text-gray-300 hover:text-red-500 transition-colors">
+                <a href="/Accounts" className="flex items-center gap-2 text-gray-300 hover:text-red-500 transition-colors">
                   <Users className="w-4 h-4" />
                   Accounts
                 </a>
-                <a href="#coaching" className="flex items-center gap-2 text-gray-300 hover:text-red-500 transition-colors">
+                <a href="/Coaching" className="flex items-center gap-2 text-gray-300 hover:text-red-500 transition-colors">
                   <Award className="w-4 h-4" />
                   Coaching
                 </a>

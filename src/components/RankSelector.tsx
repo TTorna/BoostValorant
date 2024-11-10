@@ -1,5 +1,5 @@
-import React from 'react';
-import { ChevronLeft, ChevronRight, Server } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ranks = [
   { id: 5, name: 'Iron', tiers: ['I', 'II', 'III'], color: 'from-gray-400 to-gray-600' },
@@ -19,14 +19,24 @@ interface RankSelectorProps {
   selectedTier: number;
   onRankChange: (rank: number) => void;
   onTierChange: (tier: number) => void;
+  setRRGlobal: (rrSet: string) => void;
+  setRegion: (regionSet: string) => void;
+  rrGlobal: string;
+  region: string;
+  number: number;
 }
 
-export function RankSelector({ label, selectedRank, selectedTier, onRankChange, onTierChange }: RankSelectorProps) {
+export function RankSelector({ label, selectedRank, selectedTier, onRankChange, onTierChange, setRRGlobal, setRegion, rrGlobal, region, number }: RankSelectorProps) {
   const [rr, setRR] = React.useState('0-20');
-  const [server, setServer] = React.useState('EU');
+  const [server, setServer] = React.useState('LAS');
+
+  useEffect(() => {
+    setRRGlobal(rr);
+    setRegion(server);
+  }, [rr, server]);
 
   return (
-    <div className="flex flex-col items-center gap-6 bg-gray-800/50 p-6 rounded-2xl backdrop-blur-sm">
+    <div className="flex flex-col items-center gap-6 bg-gray-800/50 p-6 px-10 rounded-2xl backdrop-blur-sm">
       <h3 className="text-xl font-bold text-gray-200">{label}</h3>
       
       <div className="flex items-center gap-6">
@@ -73,7 +83,7 @@ export function RankSelector({ label, selectedRank, selectedTier, onRankChange, 
           </button>
         ))}
       </div>
-
+      { number === 1 ?
       <div className="flex gap-4 w-full mt-2">
         <div className="flex-1">
           <label className="text-sm text-gray-400 mb-1 block">Current RR</label>
@@ -97,13 +107,23 @@ export function RankSelector({ label, selectedRank, selectedTier, onRankChange, 
             onChange={(e) => setServer(e.target.value)}
             className="w-full bg-gray-700/50 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500"
           >
-            <option value="EU">Europe</option>
-            <option value="NA">North America</option>
-            <option value="AP">Asia Pacific</option>
-            <option value="KR">Korea</option>
+            <option value="LAS">LAS</option>
+            <option value="BR">BR</option>
           </select>
         </div>
       </div>
+      : 
+      <div className="flex gap-4 w-full mt-2">
+      <div className="flex-1">
+        <label className="text-sm text-gray-400 mb-1 block">Current RR</label>
+        <label className="block w-full bg-gray-700/50 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500">{rrGlobal}</label>
+      </div>
+
+      <div className="flex-1">
+        <label className="text-sm text-gray-400 mb-1 block">Server</label>
+        <label className="block w-full bg-gray-700/50 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500" >{region}</label>
+      </div>
+      </div>}
     </div>
   );
 }

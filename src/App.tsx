@@ -12,6 +12,8 @@ function App() {
   const [desiredRank, setDesiredRank] = useState(0);
   const [desiredTier, setDesiredTier] = useState(0);
   const [activeBoostType, setActiveBoostType] = useState('rank');
+  const [currentRR, setCurrentRR] = useState('');
+  const [currentRegion, setCurrentRegion] = useState('');
 
   const boostTypes = [
     { id: 'rank', name: 'Rank Boost', icon: <Award className="w-4 h-4" /> },
@@ -128,6 +130,11 @@ function App() {
               selectedTier={currentTier}
               onRankChange={setCurrentRank}
               onTierChange={setCurrentTier}
+              setRRGlobal={setCurrentRR}
+              setRegion={setCurrentRegion}
+              rrGlobal={currentRR}
+              region={currentRegion}
+              number={1}
             />
             <RankSelector
               label="Desired Rank"
@@ -135,6 +142,11 @@ function App() {
               selectedTier={desiredTier}
               onRankChange={setDesiredRank}
               onTierChange={setDesiredTier}
+              setRRGlobal={setCurrentRR}
+              setRegion={setCurrentRegion}
+              rrGlobal={currentRR}
+              region={currentRegion}
+              number={2}
             />
           </div>
 

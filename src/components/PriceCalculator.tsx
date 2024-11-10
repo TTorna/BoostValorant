@@ -1,5 +1,5 @@
-import React from 'react';
-import { Sparkles, Clock, Shield, Zap } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { Sparkles, Clock, Shield, Zap, Handshake } from 'lucide-react';
 
 interface PriceCalculatorProps {
   currentRank: number;
@@ -11,29 +11,45 @@ interface PriceCalculatorProps {
 export function PriceCalculator({ currentRank, currentTier, desiredRank, desiredTier }: PriceCalculatorProps) {
   const [discountCode, setDiscountCode] = React.useState('');
   const [options, setOptions] = React.useState({
-    offlineMode: true,
-    encryption: true,
-    selectAgent: false,
-    playWithBooster: false,
+    quality: true,
+    duo: false,
     expressOrder: false
   });
 
   const calculatePrice = () => {
+    const basePrice = 10;
+
     const rankDiff = (desiredRank * 3 + desiredTier) - (currentRank * 3 + currentTier);
     if (rankDiff <= 0) return 0;
     
-    let basePrice = rankDiff * 15;
+    // Exponential pricing based on rank
+    const multiplier = 1 + (currentRank * 0.2);
+    let price = basePrice * rankDiff * multiplier;
     
+    // Additional premium for higher ranks
+    if (desiredRank >= 6) price *= 1.5; // Ascendant and above
+    if (desiredRank >= 7) price *= 2; // Immortal and above
+    if (desiredRank === 8) price *= 3; // Radiant
+
     // Apply options modifiers
-    if (options.playWithBooster) basePrice *= 1.75;
-    if (options.expressOrder) basePrice *= 1.25;
-    if (discountCode === 'N1BOOST2024') basePrice *= 0.9;
+    if (options.duo) price *= 1.75;
+    if (options.expressOrder) price *= 1.25;
+    if (discountCode === 'ONETAPE10OFF') price *= 0.9;
     
-    return basePrice;
+    return Math.round(price);
   };
 
-  const price = calculatePrice();
+  let price = calculatePrice();
+
+  useEffect(() => {
+    price = calculatePrice();
+  }, [options, discountCode]);
+
   const estimatedDays = Math.ceil(price / (options.expressOrder ? 30 : 15));
+
+  function handleOptionChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setOptions(prev => ({ ...prev, expressOrder: event.target.checked }));
+  }
 
   return (
     <div className="w-full max-w-md bg-gray-800/50 backdrop-blur-sm rounded-xl p-8">
@@ -41,16 +57,34 @@ export function PriceCalculator({ currentRank, currentTier, desiredRank, desired
         <div className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
           <div className="flex items-center gap-3">
             <Shield className="w-5 h-5 text-green-400" />
-            <span>Offline Mode + Advanced VPN</span>
+            <span>Quality boost</span>
+            <span className="text-sm text-green-400">FREE</span>
           </div>
           <div className="relative">
             <input
               type="checkbox"
-              checked={options.offlineMode}
-              onChange={(e) => setOptions(prev => ({ ...prev, offlineMode: e.target.checked }))}
+              checked={options.quality}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+            <label className="block w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></label>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
+          <div className="flex items-center gap-3">
+            <Handshake className="w-5 h-5 text-blue-400"/>
+            <span>Play with Booster</span>
+            <span className="text-sm text-red-400">+75%</span>
+          </div>
+          <div className="relative">
+            <input
+              type="checkbox"
+              checked={options.duo}
+              onChange={(e) => setOptions(prev => ({ ...prev, duo: e.target.checked }))}
+              className="sr-only peer"
+              id="duo"
+            />
+            <label className="block w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500" htmlFor="duo"></label>
           </div>
         </div>
 
@@ -65,10 +99,11 @@ export function PriceCalculator({ currentRank, currentTier, desiredRank, desired
             <input
               type="checkbox"
               checked={options.expressOrder}
-              onChange={(e) => setOptions(prev => ({ ...prev, expressOrder: e.target.checked }))}
+              onChange={(e) => handleOptionChange(e)}
               className="sr-only peer"
+              id='express'
             />
-            <div className="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+            <label className="block w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500" htmlFor='express'></label>
           </div>
         </div>
       </div>

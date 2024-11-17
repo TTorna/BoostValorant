@@ -29,7 +29,7 @@ function App() {
       <nav className="bg-gray-800/90 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
-            <div className="text-2xl font-bold text-red-500">Wilsxr Boost</div>
+            <div className="text-2xl font-bold text-red-500">oneTape</div>
             <div className="flex items-center gap-8">
               <div className="flex items-center gap-6">
                 <a href="#boosting" className="flex items-center gap-2 text-gray-300 hover:text-red-500 transition-colors">
